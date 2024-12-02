@@ -1,49 +1,40 @@
 #include <raylib.h>
 #include <raymath.h>
-#include "GameObject.cpp"
+#include "include/GameObject.cpp"
+#include "include/Sprite.cpp"
+#include "include/HandDeckZone.cpp"
+#include "include/Card.cpp"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1152
+#define WINDOW_HEIGHT 648
 
 
-void game_loop(){
+void game_loop(GameObject &root) { // 游戏循环
 	float dt = GetFrameTime(); // 增量时间
-}
+	root.update(dt); // 更新所有游戏对象
 
+	BeginDrawing(); // 开始绘制
+	ClearBackground(WHITE);
+	root.draw(); // 绘制所有游戏对象
+	EndDrawing(); // 结束绘制
+}
 
 int main() {
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT,"Test");
-	SetTraceLogLevel(LOG_WARNING);
+	SetTraceLogLevel(LOG_WARNING); // 设置日志级别
 	SetTargetFPS(60);
 	
-	//创建一个40*40,透明背景的图片
-	Image img=GenImageColor(40,40,BLANK);
-	//在图片中绘制一个以(20,20)为圆心，半径为20的红色圆
-	ImageDrawCircle(&img,20,20,19,RED);
-	
-	Texture texture = LoadTextureFromImage(img);
-	
-	UnloadImage(img); //不再需要使用img，释放掉
-	int x=0;
-	int y=0;
-	int step=5;
-	while (!WindowShouldClose()) {
-		game_loop() // update all game objects
-		//更新圆的位置（texture显示的位置）
-		x+=5;
-		if (x>WINDOW_WIDTH-texture.width) {
-			y+=texture.height;
-			x=0;
-			if (y>WINDOW_HEIGHT-texture.height) {
-				y=0;
-			}
-		}
-		//绘制帧
-		BeginDrawing();
-		ClearBackground(WHITE);
-		DrawTexture(texture,x,y,WHITE);
-		EndDrawing();
+	GameObject root; //创建根对象
+	HandDeckZone* handDeckZone = new HandDeckZone(); //创建手牌区域对象
+	root.addChild(std::unique_ptr<GameObject>(handDeckZone)); //将手牌区域对象添加到根对象中
+
+	for(int i = 0; i < 10; i++){
+		Card* a_card = new Card("asset/Deck.png", 1, 1); //创建精灵对象
+		handDeckZone->addCard(std::unique_ptr<Card>(a_card)); //将精灵对象添加到手牌区域对象中
 	}
-	UnloadTexture(texture); //释放texture对象
+	
+	while (!WindowShouldClose()) {
+		game_loop(root); // update all game objects and draw all game objects
+	}
 	CloseWindow();
 }

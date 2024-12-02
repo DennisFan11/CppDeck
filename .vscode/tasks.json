@@ -3,8 +3,9 @@
         {
             "type": "cppbuild",
             "label": "C/C++: gcc 建置使用中檔案",
-            "command": "/usr/bin/gcc",
+            "command": "/usr/bin/g++",
             "args": [
+                "-std=c++20",
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
