@@ -1,13 +1,11 @@
-#include <raylib.h>
-#include <raymath.h>
-#include <vector>
-#include <memory>
-#include "GameObject.cpp"
+// #include <raylib.h>
+// #include <raymath.h>
+// #include <vector>
+// #include <memory>
+#include "../base/GameObject.cpp"
 #include "Card.cpp"
-#include "VectorUtils.cpp"
 
 #pragma once
-using namespace VectorUtils;
 class HandDeckZone:public GameObject {
     private:
         Vector2 position = {420.0f, 548.0f}; // 手牌区域中心位置
@@ -45,7 +43,7 @@ class HandDeckZone:public GameObject {
             Vector2 cardPos = position - Vector2{cardInterval * (float)(cards.size()/2.0f), 0.0f}; // 计算第一张手牌的位置
 
             for (int i = 0; i < cards.size(); i++){
-                cards[i]->setPosition(cardPos);
+                cards[i]->setTargetPosition(cardPos);
                 cardPos.x += cardInterval; // 更新下一张手牌的位置
                 cards[i]->update(delta);
             }

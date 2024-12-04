@@ -1,10 +1,9 @@
 #include <raylib.h>
 #include "GameObject.cpp"
-#include "VectorUtils.cpp"
+// #include "VectorUtils.cpp"
 
 
 #pragma once
-using namespace VectorUtils;
 class Sprite : public GameObject
 {
     private:
