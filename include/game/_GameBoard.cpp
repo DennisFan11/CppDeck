@@ -19,7 +19,9 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
         void Gui(){
             if (GuiButton((Rectangle){ 980, 100, 120, 30 }, "add card")){
                 printf("add card\n");
-                std::shared_ptr<Card> a_card = std::make_shared<Card>("asset/Deck.png", 1, 1); //创建精灵对象
+                int number = rand()%13 + 1;
+                int suit = rand()%4;
+                std::shared_ptr<Card> a_card = std::make_shared<Card>("asset/Deck.png", number, suit); //创建精灵对象
                 a_card->setPosition({0.0f, 0.0f});
                 a_card->setTargetPosition({0.0f, 0.0f});
                 handZone->addChild(a_card); //将精灵对象添加到手牌区域对象中

@@ -1,13 +1,48 @@
 #include "../base/Sprite.cpp"
 #include "../base/GameObject.cpp"
-
+#include <string>
 
 
 #pragma once
+bool loaded;
+Font font;
 
 class Card: public GameObject, public std::enable_shared_from_this<Card> {
     private:
         bool last_isChosen = false;
+
+        void resInit(){
+            if (loaded){
+                return;
+            }
+            loaded = true;
+
+            // font = LoadFont("asset/NotoSans.ttf");
+
+            char text[]="bel你好♠♥ ♦♣";
+            // 将字符串中的字符逐一转换成Unicode码点，得到码点表
+            int codepointsCount;
+            int *codepoints=LoadCodepoints(text,&codepointsCount);
+            // 读取仅码点表中各字符的字体
+            int fileSize;
+            const unsigned char *fontData = LoadFileData("asset/NoToTc.ttf",&fileSize);
+            font = LoadFontFromMemory(".ttf", fontData, fileSize, 32, codepoints, codepointsCount);
+            // 释放码点表
+            UnloadCodepoints(codepoints);
+        }
+        std::string suitMap(int s){
+            switch (s){
+                case SPADE:
+                    return "♠";
+                case HEART:
+                    return "♥";
+                case DIAMOND:
+                    return "♦";
+                case CLUB:
+                    return "♣";
+            }
+            return "";
+        }
     protected:
         int number;
         int suit;
@@ -31,6 +66,9 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
 
         void draw() override{
             GameObject::draw();
+            
+            DrawTextEx(GetFontDefault(), TextFormat("%d", number), position-cardSize/2.3f, 20.0f, 2.0f, BLACK); // 绘制数字
+            DrawTextEx(font, suitMap(suit).c_str(), position-cardSize/2.9f, 20.0f, 2.0f, BLACK); // 绘制花色  
             backgroundSprite->setPosition(position); // 设置精灵的位置
             backgroundSprite->setTint(isHover && (state == HAND_ZONE) ? GRAY : WHITE); // 设置選中精灵的颜色
             if(isFaceUp){
@@ -80,6 +118,7 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
             HAND_ZONE
         };
         Card(const char* path, int number, int suit){
+            resInit();
             backgroundSprite = std::make_shared<Sprite>(path);
             addChild(backgroundSprite);
             this->number = number;
