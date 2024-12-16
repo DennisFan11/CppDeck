@@ -1,12 +1,11 @@
 #include <raylib.h>
 #include "GameObject.cpp"
-// #include "VectorUtils.cpp"
 
 
 #pragma once
 class Sprite : public GameObject
 {
-    private:
+    protected:
         Texture2D texture;
 
         Vector2 size; // 精灵的大小
@@ -14,11 +13,7 @@ class Sprite : public GameObject
         Vector2 origin = {1.0f, 1.0f}; // 精灵的原点
         
         Color tint = WHITE; // 精灵的颜色
-    public:
-        Sprite(const char* path):GameObject(){
-            texture = LoadTexture(path);
-            size = {(float)texture.width, (float)texture.height};
-        }
+
         void draw() override{
             GameObject::draw();
             Rectangle sourceRec = {0.0f, 0.0f, size.x, size.y}; // 设置裁剪矩形
@@ -29,6 +24,15 @@ class Sprite : public GameObject
         void update(float delta) override{
             GameObject::update(delta);
         }
+        bool input() override{
+            return GameObject::input();
+        }
+    public:
+        Sprite(const char* path):GameObject(){
+            texture = LoadTexture(path);
+            size = {(float)texture.width, (float)texture.height};
+        }
+        
 
         void setSize(Vector2 size){
             this->size = size;

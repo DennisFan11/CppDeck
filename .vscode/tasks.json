@@ -11,7 +11,8 @@
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
-                "-lraylib"
+                "-lraylib",
+                "-Wno-enum-compare"
             ],
             "options": {
                 "cwd": "${fileDirname}"

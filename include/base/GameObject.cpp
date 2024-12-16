@@ -7,14 +7,9 @@
 #pragma once
 
 class GameObject{
-    private:
-        std::vector<std::unique_ptr<GameObject>> children; // 子对象列表
     protected:
+        std::vector<std::shared_ptr<GameObject>> children; // 子对象列表
         Vector2 position; // 精灵的位置
-    public:
-        GameObject() = default;
-        virtual ~GameObject() = default;
-
         virtual void draw(){
             for (auto& child : children){
                 child->draw();
@@ -22,20 +17,49 @@ class GameObject{
         }
         virtual void update(float delta){
             for (auto& child : children){
-                child->update(delta);
+                // check if the child is nullptr
+                if (child){
+                    child->update(delta);
+                }
             }
         }
-        void addChild(std::unique_ptr<GameObject> child){
-            children.push_back(std::move(child));
+        virtual bool input(){
+            for (auto& child : children){
+                if (child->input()){
+                    return true;
+                }
+            }
+            return false;
         }
-        void removeChild(GameObject* child){
-            children.erase(std::remove_if(children.begin(), children.end(), [child](const std::unique_ptr<GameObject>& p) { return p.get() == child; }), children.end());
+    public:
+        GameObject() = default;
+        virtual ~GameObject() = default;
+        
+        void r_draw(){ // 递归绘制
+            draw();
+        }
+        void r_update(float delta){ // 递归更新
+            update(delta);
+        }
+        bool r_input(){ // 递归输入
+            return input();
+        }
+        
+        virtual void addChild(std::shared_ptr<GameObject> child){
+            children.push_back(child);
+        }
+        void removeChild( std::shared_ptr<GameObject> child ){
+            children.erase(std::remove(children.begin(), children.end(), child), children.end());
+        }
+        void removeChild( int index ){
+            if (index < 0 || index >= children.size()){
+                return;
+            }
+            children.erase(children.begin() + index);
         }
         void clearChildren(){
+
             children.clear();
-        }
-        std::vector<std::unique_ptr<GameObject>>& getChildren(){
-            return children;
         }
         void setPosition(Vector2 position){
             this->position = position;
@@ -43,5 +67,6 @@ class GameObject{
         Vector2 getPosition(){
             return position;
         }
+        
         
 };
