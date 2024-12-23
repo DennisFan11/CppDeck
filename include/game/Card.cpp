@@ -99,9 +99,12 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
             if (ret){
                 return true; // 如果有子对象被选中，返回true
             }
-            isHover = this->isMouseInside();
-            isChosen = isHover && IsMouseButtonDown(MOUSE_LEFT_BUTTON);
-            return isHover;
+            if (state == HAND_ZONE){
+                isHover = this->isMouseInside();
+                isChosen = isHover && IsMouseButtonDown(MOUSE_LEFT_BUTTON);
+                return isHover;
+            }
+            return false;
         }
     
     public: // 公有方法
