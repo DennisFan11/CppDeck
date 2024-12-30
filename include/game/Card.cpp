@@ -19,7 +19,7 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
 
             // font = LoadFont("asset/NotoSans.ttf");
 
-            char text[]="bel你好♠♥ ♦♣";
+            char text[]="bel你好♠♥ ♦♣無牌型偶星三賢者雙偶星滿座序列同色四騎士同色順序";
             // 将字符串中的字符逐一转换成Unicode码点，得到码点表
             int codepointsCount;
             int *codepoints=LoadCodepoints(text,&codepointsCount);
@@ -68,8 +68,8 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
         void draw() override{
             GameObject::draw();
             
-            DrawTextEx(GetFontDefault(), TextFormat("%d", number), position-cardSize/2.3f, 20.0f, 2.0f, BLACK); // 绘制数字
-            DrawTextEx(font, suitMap(suit).c_str(), position-cardSize/2.9f, 20.0f, 2.0f, BLACK); // 绘制花色  
+            DrawTextEx(GetFontDefault(), TextFormat("%d", number), position-cardSize/2.3f, 20.0f, 2.0f, WHITE); // 绘制数字
+            DrawTextEx(font, suitMap(suit).c_str(), position-cardSize/2.9f, 20.0f, 2.0f, WHITE); // 绘制花色  
             backgroundSprite->setPosition(position); // 设置精灵的位置
             backgroundSprite->setTint(isHover && (state == HAND_ZONE) ? GRAY : WHITE); // 设置選中精灵的颜色
             if(isFaceUp){

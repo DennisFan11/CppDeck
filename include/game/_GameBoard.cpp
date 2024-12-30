@@ -85,7 +85,7 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
             int index = rand()%totCards.size();
             _card a_card = totCards[index];
             totCards.erase(totCards.begin() + index);
-            std::shared_ptr<Card> card = std::make_shared<Card>("asset/Deck.png", a_card.number, a_card.suit);
+            std::shared_ptr<Card> card = std::make_shared<Card>("asset/card_bg.png", a_card.number, a_card.suit);
             card->setPosition({0.0f, 0.0f});
             card->setTargetPosition({0.0f, 0.0f});
             return card;
@@ -143,6 +143,9 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                 case ROUND_END: // ai move
                     // aiMoveEnd = true;
                     // ai move end
+                    if (round_time >=3){
+                        _status = GAME_END;
+                    }
                     aiMove();
                     message = "Round " + std::to_string(round_time+1) + "\n Enemy Turn";
                     if (aiMoveEnd){
@@ -150,9 +153,6 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                         _status = ROUND;
                         playerMoveEnd = false;
                         playMovedCardCount = 0;
-                    }
-                    if (round_time >=3){
-                        _status = GAME_END;
                     }
                     break;
 
@@ -214,6 +214,12 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
             // std::cout << std::endl;
             playerZone->point = countPoint(publicNumber, publicSuit, playerNumber, playerSuit);
             enemyZone->point = countPoint(publicNumber, publicSuit, enemyNumber, enemySuit);
+            playerZone->count_s = countPoint_s(publicNumber, publicSuit, playerNumber, playerSuit);
+            enemyZone->count_s = countPoint_s(publicNumber, publicSuit, enemyNumber, enemySuit);
+            // std::cout << "player point: " << playerZone->point << std::endl;
+            // std::cout << "enemy point: " << enemyZone->point << std::endl;
+            // std::cout << "player count_s: " << playerZone->count_s << std::endl;
+            // std::cout << "enemy count_s: " << enemyZone->count_s << std::endl;
         }
     protected:
         OpenAi_Enemy ai;

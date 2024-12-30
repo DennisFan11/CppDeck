@@ -227,7 +227,7 @@ std::pair<int, std::string> determineHandType(
         return {pointSum, "無牌型"};
     }
 }
-
+//無牌型偶星三賢者雙偶星滿座序列同色四騎士同色順序
 int countPoint(
     std::vector<int> &publicNumber, // 公共區域牌號 (1-13)
     std::vector<int> &publicSuit,   // 公共區域花色 (0-3)
@@ -252,58 +252,27 @@ int countPoint(
         return determineHandType(allNumbers, allSuits).first; // 使用 determineHandType 的返回值計算分數
     }
 }
+std::string countPoint_s(
+    std::vector<int> &publicNumber, // 公共區域牌號 (1-13)
+    std::vector<int> &publicSuit,   // 公共區域花色 (0-3)
+    std::vector<int> &handNumber,   // 手牌牌號 (1-13)
+    std::vector<int> &handSuit      // 手牌花色 (0-3)
+)
+{
+    std::vector<int> allNumbers = publicNumber;
+    std::vector<int> allSuits = publicSuit;
+    allNumbers.insert(allNumbers.end(), handNumber.begin(), handNumber.end());
+    allSuits.insert(allSuits.end(), handSuit.begin(), handSuit.end());
 
-// // 主程式
-// int main()
-// {
-//     std::vector<int> publicNumber, publicSuit, handNumber, handSuit;
-//     int n;
-
-//     // 輸入公共區域牌
-//     std::cout << "輸入公共區域牌數量 (最多3張): ";
-//     std::cin >> n;
-//     n = std::min(n, 3);
-//     std::cout << "輸入公共區域牌 (點數與花色對應，花色用1-4表示):\n";
-//     for (int i = 0; i < n; ++i)
-//     {
-//         int num, suit;
-//         std::cout << "第 " << (i + 1) << " 張點數: ";
-//         std::cin >> num;
-//         std::cout << "第 " << (i + 1) << " 張花色: ";
-//         std::cin >> suit;
-//         publicNumber.push_back(num);
-//         publicSuit.push_back(suit);
-//     }
-
-//     // 輸入手牌
-//     std::cout << "輸入手牌數量 (最多4張): ";
-//     std::cin >> n;
-//     n = std::min(n, 4);
-//     std::cout << "輸入手牌 (點數與花色對應，花色用1-4表示):\n";
-//     for (int i = 0; i < n; ++i)
-//     {
-//         int num, suit;
-//         std::cout << "第 " << (i + 1) << " 張點數: ";
-//         std::cin >> num;
-//         std::cout << "第 " << (i + 1) << " 張花色: ";
-//         std::cin >> suit;
-//         handNumber.push_back(num);
-//         handSuit.push_back(suit);
-//     }
-
-//     // 計算分數
-//     int score = countPoint(publicNumber, publicSuit, handNumber, handSuit);
-//     std::vector<int> allNumbers = publicNumber;
-//     std::vector<int> allSuits = publicSuit;
-
-//     // 合併手牌與公共區域牌
-//     allNumbers.insert(allNumbers.end(), handNumber.begin(), handNumber.end());
-//     allSuits.insert(allSuits.end(), handSuit.begin(), handSuit.end());
-
-//     // 傳遞完整牌組進行判斷
-//     std::pair<int, std::string> result = determineHandType(allNumbers, allSuits);
-
-//     std::cout << "牌型: " << result.second << ", 分數: " << score << std::endl;
-
-//     return 0;
-// }
+    // 新增檢查：如果沒有輸入任何牌，直接返回 "無牌型"
+    if (allNumbers.empty() || allSuits.empty())
+    {
+        // std::cout << "所有牌的點數與花色:\n(無牌)\n";
+        return "無牌型"; // 返回分數為0，並視為 "無牌型"
+    }
+    else
+    {
+        // displayCards(allNumbers, allSuits, "所有牌的點數與花色");
+        return determineHandType(allNumbers, allSuits).second; // 使用 determineHandType 的返回值計算分數
+    }
+}

@@ -17,7 +17,9 @@ class EnemyZone: public CardZone{
             print_text();
         }
         int point = 0;
+        std::string count_s;
         void print_text(){
             DrawText(("Enemy Zone (point : " + std::to_string(point) + ")").c_str(), position.x-350, position.y+50, 20, WHITE);
+            DrawTextEx(font, count_s.c_str(), {position.x,position.y+50},20.0f , 2.0f, WHITE); // 绘制花色  
         }
 };
