@@ -27,7 +27,7 @@ void game_loop(GameObject &root) { // 游戏循环
 
 int main() {
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT,"Test");
-	SetTraceLogLevel(LOG_WARNING); // 设置日志级别
+	SetTraceLogLevel(LOG_NONE); // 设置日志级别
 	SetTargetFPS(60);
 	
 	GameObject root; //创建根对象

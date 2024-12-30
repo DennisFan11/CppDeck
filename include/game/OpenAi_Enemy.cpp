@@ -24,7 +24,7 @@ class OpenAi_Enemy{
 
         
         std::string model = "gpt-4o";
-        std::string temperature = "0.0";
+        float temperature = 0.0;
 
         
         // 呼叫 OpenAI API，傳遞題詞並獲取 AI 回應
@@ -50,18 +50,23 @@ class OpenAi_Enemy{
                 curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
                 // 構建 JSON 請求數據
+                // std::string _prompt = "Test"; // TEST: remove this line
                 nlohmann::json payload;
                 payload["model"] = model;
-                payload["messages"] = {{"role", "user"}, {"content", prompt}};
+                payload["messages"] = {{{"role", "user"}, {"content", prompt}}};
                 payload["temperature"] = temperature;
 
-                curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.dump().c_str());
+
+                std::string payloadStr = payload.dump();
+                curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payloadStr.c_str());
 
                 // 設置回應處理
                 curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-                // cout payload
-                std::cout << payload.dump() << std::endl;
+                // cout package
+                // std::cout << curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.dump().c_str()) << std::endl;
+                // std::cout << headers << std::endl;
+                // std::cout << payload.dump().c_str() << std::endl;
                 // 發送請求
                 res = curl_easy_perform(curl);
 
@@ -116,8 +121,8 @@ class OpenAi_Enemy{
             prompt += "   - 序列: 60 分 + 卡片總點數（五張連續的牌，不限花色）。\n";
             prompt += "   - 滿座: 55 分 + 卡片總點數（三張相同 + 兩張相同點數的牌）。\n";
             prompt += "   - 雙偶星: 30 分 + 卡片總點數(兩組兩張相同點數的牌，且兩組點數不相同)。\n";
-            prompt += "   - 三賢者：30 分 + 卡片總點數(三張相同的牌，且其他牌沒辦法組出滿座)。\n";
-            prompt += "   - 偶星：15 分 + 卡片總點數(兩張相同點數的牌)。\n";
+            prompt += "   - 三賢者:30 分 + 卡片總點數(三張相同的牌，且其他牌沒辦法組出滿座)。\n";
+            prompt += "   - 偶星:15 分 + 卡片總點數(兩張相同點數的牌)。\n";
             prompt += "   - 若無牌型，僅計算所有卡片的總點數。\n\n";
             prompt += "3. 策略建議：\n";
             prompt += "   - 優先構成高分牌型（同色順序 > 四騎士 > 同色 > 序列 > 滿座 > 雙偶星 = 三賢者 > 偶星）。\n";
@@ -126,7 +131,7 @@ class OpenAi_Enemy{
             prompt += "   - 公共區域: " + publicZone + "\n";
             prompt += "   - 出牌區域: " + cardZone + "\n";
             prompt += "   - 手牌區域: " + handZone + "\n\n";
-            prompt += "請根據以上資訊，返回選擇的手牌索引，回應格式需符合以下正則表達式：\n";
+            prompt += "請根據以上資訊，返回選擇的手牌索引, 不要輸出任何多餘的東西，回應格式需符合以下正則表達式：\n";
             prompt += "   - 正則表達式: ^(\\d+\\s?)*$\n";
             prompt += "   - 僅包含索引數字，並以空格分隔，例如 \"1 3\" 或 \"2\"，無其他文字或標點符號。";
             return prompt;
@@ -162,7 +167,7 @@ class OpenAi_Enemy{
             int index;
             while (responseStream >> index)
             {
-                indices.push_back(index - 1); // 索引從 1 開始，轉換為 0 索引
+                indices.push_back(index); // 索引從 1 開始，轉換為 0 索引
             }
             return indices;
         }

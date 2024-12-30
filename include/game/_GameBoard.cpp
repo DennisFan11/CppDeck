@@ -97,10 +97,16 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
 
 
             std::vector<int> move = ai.aiMove(); // call ai
+            std::vector<std::shared_ptr<Card>> temp;
             for (int i = 0; i < move.size(); i++){
-                std::shared_ptr<Card> card = ai.handcards[move[i]];
-                ai.handcards.erase(ai.handcards.begin() + move[i]);
-                enemyZone->addChild(card);
+                if (move[i] >= 0 && move[i] < ai.handcards.size()) {
+                    std::shared_ptr<Card> card = ai.handcards[move[i]];
+                    temp.push_back(card);
+                    enemyZone->addChild(card);
+                }
+            }
+            for (auto& card : temp){
+                ai.handcards.erase(std::remove(ai.handcards.begin(), ai.handcards.end(), card), ai.handcards.end());
             }
             aiMoveEnd = true;
         }
@@ -258,13 +264,13 @@ void Card::moveCheck(){
         return;
     }
     if (CheckCollisionRecs(getZone(), gameBoard->trashCanZone->getZone())){
-        printf("-> trashCan zone\n");
+        // printf("-> trashCan zone\n");
         // gameBoard->trashCanZone->addChild(shared_from_this());
         gameBoard->handZone->removeChild(shared_from_this());
     }
     if (CheckCollisionRecs(getZone(), gameBoard->playerZone->getZone())){
         playMovedCardCount++;
-        printf("-> playerZone\n");
+        // printf("-> playerZone\n");
         gameBoard->playerZone->addChild(shared_from_this());
         gameBoard->handZone->removeChild(shared_from_this());
     }
