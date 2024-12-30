@@ -25,7 +25,18 @@ class CardZone:public GameObject {
                 cardPos.x += cardInterval; // 更新下一张手牌的位置
             }
         }
+
+
+        
     public:
+
+        std::string to_string(){
+            std::string res = "";
+            for (auto& child : children){
+                res += std::dynamic_pointer_cast<Card>(child)->to_string() + " ";
+            }
+            return res;
+        }
         CardZone() = default;
 
         void draw() override{ // 绘制手牌

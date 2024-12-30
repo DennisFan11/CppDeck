@@ -12,6 +12,7 @@
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
                 "-lraylib",
+                "-lcurl",
                 "-Wno-enum-compare"
             ],
             "options": {

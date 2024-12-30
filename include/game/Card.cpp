@@ -43,6 +43,7 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
             }
             return "";
         }
+        
     protected:
         int number;
         int suit;
@@ -152,6 +153,9 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
         Rectangle getZone(){
             Vector2 LT = position - cardSize/2.0f;
             return {LT.x, LT.y, cardSize.x, cardSize.y};
+        }
+        std::string to_string(){
+            return std::to_string(number) + suitMap(suit);
         }
 
 };

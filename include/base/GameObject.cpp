@@ -61,6 +61,10 @@ class GameObject{
 
             children.clear();
         }
+        std::vector<std::shared_ptr<GameObject>> getChildren() const {
+            return children;
+        }
+
         void setPosition(Vector2 position){
             this->position = position;
         }
