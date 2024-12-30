@@ -12,4 +12,11 @@ class PublicZone: public CardZone{
             children.push_back(child);
             std::dynamic_pointer_cast<Card>(child)-> setState(Card::PUBLIC_ZONE);
         }
+        void draw() override{
+            CardZone::draw();
+            print_text();
+        }
+        void print_text(){
+            DrawText("Public Zone ", position.x-350, position.y+50, 20, WHITE);
+        }
 };

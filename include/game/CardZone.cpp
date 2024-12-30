@@ -15,7 +15,7 @@ class CardZone:public GameObject {
             DrawRectangleV(pos, size, color); 
         }
         void update_card_pos(float delta){ // 更新手牌位置
-            const float cardInterval = 60.0f;
+            const float cardInterval = 40.0f;
             Vector2 cardSize = {90.0f, 128.0f};
             Vector2 cardPos = position - Vector2{cardInterval * (float)(children.size()/2.0f), 0.0f}; // 计算第一张手牌的位置
 

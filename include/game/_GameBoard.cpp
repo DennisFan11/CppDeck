@@ -19,7 +19,7 @@
 
 enum STATUS{ GAME_START, RULE_EXPLANE, ROUND, ROUND_END, GAME_END };
 
-int status = GAME_START; // 
+int _status = GAME_START; // 
 int round_time = 0;
 bool playerMoveEnd = false;
 int playMovedCardCount = 0;
@@ -35,7 +35,7 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
         }
 
         void Gui(){
-            if (status == ROUND){
+            if (_status == ROUND){
                 if (GuiButton((Rectangle){ 980, 100, 120, 30 }, "end turn")){
                     playerMoveEnd = true;
                 }
@@ -80,46 +80,45 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                 }
             }
         }
+        
         std::shared_ptr<Card> getCard(){
             int index = rand()%totCards.size();
             _card a_card = totCards[index];
             totCards.erase(totCards.begin() + index);
             std::shared_ptr<Card> card = std::make_shared<Card>("asset/Deck.png", a_card.number, a_card.suit);
+            card->setPosition({0.0f, 0.0f});
+            card->setTargetPosition({0.0f, 0.0f});
             return card;
         }
 
-        void aiMove(){
+        void aiMove(){ // TODO:
             ai.cardZone = playerZone->to_string();
             ai.publicZone = publicZone->to_string();
-            std::string aiHandZone = "";
-            for (int i = 0; i < ai.handcards.size(); i++){
-                aiHandZone += std::to_string(ai.handcards[i]->getNumber()) + " " + std::to_string(ai.handcards[i]->getSuit()) + " ";
-            }
 
 
             std::vector<int> move = ai.aiMove(); // call ai
             for (int i = 0; i < move.size(); i++){
                 std::shared_ptr<Card> card = ai.handcards[move[i]];
                 ai.handcards.erase(ai.handcards.begin() + move[i]);
-                playerZone->addChild(card);
+                enemyZone->addChild(card);
             }
             aiMoveEnd = true;
         }
         
         
         void status_do(){
-            switch (status){
+            switch (_status){
                 case GAME_START:
                     message = "Game Start";
 
                     if(true){ // TODO:
-                        status = RULE_EXPLANE;
+                        _status = RULE_EXPLANE;
                     }
                     break;
                 case RULE_EXPLANE:
                     message = "Rule Explane";
                     if (true){ // TODO:
-                        status = ROUND;
+                        _status = ROUND;
                         playerMoveEnd = false;
                         playMovedCardCount = 0;
                         gen_cards();
@@ -130,7 +129,7 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                     message = "Round " + std::to_string(round_time+1) + "\n Player Turn" + "\n Left \"" + std::to_string(2 - playMovedCardCount) + "\" cards can move";
                     if (playerMoveEnd){ // TODO:
                         round_time++;
-                        status = ROUND_END;
+                        _status = ROUND_END;
                         aiMoveEnd = false;
                         
                     }
@@ -142,12 +141,12 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                     message = "Round " + std::to_string(round_time+1) + "\n Enemy Turn";
                     if (aiMoveEnd){
                         _round_end_get_cards();
-                        status = ROUND;
+                        _status = ROUND;
                         playerMoveEnd = false;
                         playMovedCardCount = 0;
                     }
-                    if (round_time >3){
-                        status = GAME_END;
+                    if (round_time >=3){
+                        _status = GAME_END;
                     }
                     break;
 
@@ -162,6 +161,9 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
             for(int i = 0; i < 5; i++){
                 handZone->addChild(getCard());
                 ai.handcards.push_back(getCard());
+            }
+            for(int i = 0; i < 2; i++){
+                publicZone->addChild(getCard());
             }
         }
 
@@ -249,7 +251,7 @@ void Card::moveCheck(){
     // _GameBoard *gameBoard = (_GameBoard*)gameBoard;
     // printf("moveCheck, inside %d\n", CheckCollisionPointRec(GetMousePosition(), gameBoard->trashCanZone->getZone()));
     // printf("test_key %d\n", gameBoard->test_key);
-    if (playerMoveEnd){
+    if ( _status != ROUND || playerMoveEnd){
         return;
     }
     if (playMovedCardCount >= 2){
