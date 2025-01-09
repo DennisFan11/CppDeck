@@ -1,11 +1,7 @@
 #include <raylib.h>
 #include <raymath.h>
-
-
-
-#define WINDOW_WIDTH 1152
-#define WINDOW_HEIGHT 648
-
+#define WINDOW_WIDTH 1152 // 576
+#define WINDOW_HEIGHT 648 // 324
 
 
 #include "include/game/_GameBoard.cpp"

@@ -17,6 +17,8 @@
 
 #pragma once
 
+
+
 enum STATUS{ GAME_START, RULE_EXPLANE, ROUND, ROUND_END, GAME_END };
 
 int _status = GAME_START; // 
@@ -27,18 +29,23 @@ bool aiMoveEnd = false;
 
 class _GameBoard;
 _GameBoard* gameBoard;
+
 class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoard>{
     private:
         std::string message;
         void print_text(){
             DrawText(message.c_str(), 850.0f, 150.0f, 20, BLACK);
         }
-
+        float _time = 0.0f;
+        bool showRule = false;
         void Gui(){
             if (_status == ROUND){
                 if (GuiButton((Rectangle){ 980, 100, 120, 30 }, "end turn")){
                     playerMoveEnd = true;
                 }
+            }
+            if (GuiButton((Rectangle){ 980, 150, 120, 30 }, "show rule")){
+                showRule = !showRule;
             }
             // if (GuiButton((Rectangle){ 980, 100, 120, 30 }, "add card")){
             //     printf("add card\n");
@@ -54,14 +61,30 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
             // }
         }
         void draw() override{
-            GameObject::draw();
-            Gui();
-            print_text();
+            if (_status == GAME_START){
+                DrawText("Game Start", 200, 200, 60, BLACK);
+            }
+            // else if (_status == RULE_EXPLANE){
+            //     DrawText("RULE EXPLANE", 200, 200, 20, BLACK);
+            // }
+            // else if (_status == GAME_END){
+            //     DrawTexture(game_over_texture, 0, 0, WHITE);
+            else{
+                GameObject::draw();
+                if (showRule){
+                    DrawRectangle(0, 0, 1152, 648, {0, 0, 0, 200});
+                    DrawTextEx(font, getRule().c_str(), {100.0f, 100.0f}, 20.0f, 2.0f, WHITE);
+                }
+                Gui();
+                print_text();
+            }
+            
         }
         void update(float delta) override{
             GameObject::update(delta);
             _countPoint();
             status_do();
+            _time += delta;
         }
         
         typedef struct _card{
@@ -117,7 +140,7 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                 case GAME_START:
                     message = "Game Start";
 
-                    if(true){ // TODO:
+                    if(_time >= 3.0){
                         _status = RULE_EXPLANE;
                     }
                     break;
@@ -145,6 +168,7 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
                     // ai move end
                     if (round_time >=3){
                         _status = GAME_END;
+                        return;
                     }
                     aiMove();
                     message = "Round " + std::to_string(round_time+1) + "\n Enemy Turn";
@@ -223,6 +247,9 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
         }
     protected:
         OpenAi_Enemy ai;
+        Texture2D game_over_texture;
+        Texture2D game_start_texture;
+        // Texture2D rule_explane_texture;
     public:
         int test_key = 50;
         std::shared_ptr<TrashCanZone> trashCanZone;
@@ -248,7 +275,8 @@ class _GameBoard:public GameObject, public std::enable_shared_from_this<_GameBoa
             addChild(publicZone);
             addChild(playerZone);
             addChild(handZone);
-            
+            // game_start_texture = LoadTexture("asset/start.png");
+            game_over_texture = LoadTexture("asset/game_over.png");
         }
         Rectangle getPublicZone(){
             return publicZone->getZone();

@@ -6,6 +6,26 @@
 #pragma once
 bool loaded;
 Font font;
+std::string getRule(){
+    std::string prompt = "以下是遊戲規則：\n\n";
+    prompt += "1. 遊戲目標：\n";
+    prompt += "   - 從手牌中選擇最多 2 張牌，放入出牌區域，最大化得分。\n";
+    prompt += "   - 遊戲會根據計分邏輯進行得分計算。\n\n";
+    prompt += "2. 計分規則：\n";
+    prompt += "   - 同色順序: 120 分 + 卡片總點數（同花色且連續的牌）。\n";
+    prompt += "   - 四騎士: 80 分 + 卡片總點數（四張相同點數的牌）。\n";
+    prompt += "   - 同色: 70 分 + 卡片總點數（至少五張同花色的牌）。\n";
+    prompt += "   - 序列: 60 分 + 卡片總點數（五張連續的牌，不限花色）。\n";
+    prompt += "   - 滿座: 55 分 + 卡片總點數（三張相同 + 兩張相同點數的牌）。\n";
+    prompt += "   - 雙偶星: 30 分 + 卡片總點數(兩組兩張相同點數的牌，且兩組點數不相同)。\n";
+    prompt += "   - 三賢者:30 分 + 卡片總點數(三張相同的牌，且其他牌沒辦法組出滿座)。\n";
+    prompt += "   - 偶星:15 分 + 卡片總點數(兩張相同點數的牌)。\n";
+    prompt += "   - 若無牌型，僅計算所有卡片的總點數。\n\n";
+    prompt += "3. 策略建議：\n";
+    prompt += "   - 優先構成高分牌型（同色順序 > 四騎士 > 同色 > 序列 > 滿座 > 雙偶星 = 三賢者 > 偶星）。\n";
+    prompt += "   - 若無法構成高分牌型，選擇點數最大的卡片組合。\n";
+    return prompt;
+}
 
 class Card: public GameObject, public std::enable_shared_from_this<Card> {
     private:
@@ -19,10 +39,10 @@ class Card: public GameObject, public std::enable_shared_from_this<Card> {
 
             // font = LoadFont("asset/NotoSans.ttf");
 
-            char text[]="bel你好♠♥ ♦♣無牌型偶星三賢者雙偶星滿座序列同色四騎士同色順序";
+            std::string text = "bel你好♠♥ ♦♣無牌型偶星三賢者雙偶星滿座序列同色四騎士同色順序" + getRule();
             // 将字符串中的字符逐一转换成Unicode码点，得到码点表
             int codepointsCount;
-            int *codepoints=LoadCodepoints(text,&codepointsCount);
+            int *codepoints=LoadCodepoints(text.c_str(), &codepointsCount);
             // 读取仅码点表中各字符的字体
             int fileSize;
             const unsigned char *fontData = LoadFileData("asset/NoToTc.ttf",&fileSize);

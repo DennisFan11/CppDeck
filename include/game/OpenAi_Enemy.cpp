@@ -136,7 +136,10 @@ class OpenAi_Enemy{
             prompt += "   - 僅包含索引數字，並以空格分隔，例如 \"1 3\" 或 \"2\"，無其他文字或標點符號。";
             return prompt;
         }
-    
+/*
+
+
+*/
     public:
         std::vector<std::shared_ptr<Card>> handcards;  // 須由外部設定
         std::string publicZone; // 須由外部設定
